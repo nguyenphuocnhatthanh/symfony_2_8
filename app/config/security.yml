@@ -1,0 +1,29 @@
+security:
+    providers:
+        in_memory:
+            memory: ~
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
+    firewalls:
+        main:
+            anonymous: ~
+            provider: our_db_provider
+            form_login:
+               login_path: login
+               check_path: login
+               #valid csrf
+               csrf_token_generator: security.csrf.token_manager
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        default:
+            anonymous: ~
+            http_basic: ~
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/admin, roles: ROLE_ADMIN }
+    encoders:
+        AppBundle\Entity\User: bcrypt
