@@ -14,6 +14,52 @@ class ArticleSearch
 
     protected $title;
 
+    protected $location_last;
+
+    protected $location_lon;
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return ['lon' => $this->getLocationLon(), 'lat' => $this->getLocationLast()];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocationLast()
+    {
+        return $this->location_last;
+    }
+
+    /**
+     * @param mixed $location_last
+     */
+    public function setLocationLast($location_last)
+    {
+        $this->location_last = $location_last;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocationLon()
+    {
+        return $this->location_lon;
+    }
+
+    /**
+     * @param mixed $location_lon
+     */
+    public function setLocationLon($location_lon)
+    {
+        $this->location_lon = $location_lon;
+    }
+
+
+
     public function __construct()
     {
         // initialise the dateFrom to "one month ago", and the dateTo to "today"

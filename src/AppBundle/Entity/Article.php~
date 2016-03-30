@@ -49,6 +49,29 @@ class Article
     protected $publishedAt;
 
     /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+
+    /**
+     * @var
+     * @ORM\Column(type="string")
+     */
+    protected $location;
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()

@@ -20,18 +20,19 @@ class ArticleController extends Controller
         $articleSearch = new ArticleSearch();
 
         $articleSearchForm = $this->createForm(ArticleSearchType::class, $articleSearch, [
-            'method' => 'GET'
+            'method' => 'POST'
         ]);
         $articleSearchForm->handleRequest($request);
-        $articleSearch = $articleSearchForm->getData();
-
-        $elasticaManager = $this->container->get('fos_elastica.manager');
-        $results = $elasticaManager->getRepository('AppBundle:Article')->search($articleSearch);
-
-        if (!empty($results))
+        if ($articleSearchForm->isSubmitted()) {
+            $articleSearch = $articleSearchForm->getData();
+            $elasticaManager = $this->get('fos_elastica.manager');
+            $results = $elasticaManager->getRepository('AppBundle:Article')->search($articleSearch);
             die(dump($results));
+        }
+
+
         return $this->render('article/list.html.twig',array(
-            'results' => $results,
+            'results' => !empty($results) ? $results : [],
             'form' => $articleSearchForm->createView(),
         ));
     }

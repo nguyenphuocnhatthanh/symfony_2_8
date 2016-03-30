@@ -3,8 +3,10 @@ namespace AppBundle\SearchRepository;
 
 use AppBundle\Model\ArticleSearch;
 use Doctrine\ORM\EntityRepository;
+use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\Match;
+use Elastica\Query\MatchAll;
 use FOS\ElasticaBundle\Repository;
 
 /**
@@ -17,11 +19,54 @@ class ArticleRepository extends Repository
 {
     public function search(ArticleSearch $articleSearch)
     {
-        $boolQuery = new BoolQuery();
-        $fieldQuery = new Match();
-        $fieldQuery->setFieldQuery('article.title', $articleSearch->getTitle());
-        $boolQuery->addShould($fieldQuery);
+        /*if ($articleSearch->getTitle() != null && $articleSearch != '') {
+            $query = new \Elastica\Query\Match();
+            $query->setFieldQuery('article.title', $articleSearch->getTitle());
+            $query->setFieldFuzziness('article.title', 0.7);
+            $query->setFieldMinimumShouldMatch('article.title', '80%');
+            //
+        } else {
+            $query = new \Elastica\Query\MatchAll();
+        }
+        $baseQuery = $query;
 
-        return $this->find($boolQuery);
+        $boolFilter = new \Elastica\Filter\Bool();
+
+        if("false" != $articleSearch->getIsPublished()
+            && null !== $articleSearch->getDateFrom()
+            && null !== $articleSearch->getDateTo())
+        {
+            $boolFilter->addMust(new \Elastica\Filter\Range('publishedAt',
+                array(
+                    'gte' => \Elastica\Util::convertDate($articleSearch->getDateFrom()->getTimestamp()),
+                    'lte' => \Elastica\Util::convertDate($articleSearch->getDateTo()->getTimestamp())
+                )
+            ));
+        }
+
+        if($articleSearch->getIsPublished() !== null){
+            $boolFilter->addMust(
+                new \Elastica\Filter\Terms('published', array($articleSearch->getIsPublished()))
+            );
+        }
+
+        $filtered = new \Elastica\Query\Filtered($baseQuery, $boolFilter);
+
+        $query = \Elastica\Query::create($filtered);
+
+        return $this->find($query);*/
+
+        $query = new Query();
+        $articleSearch->setLocationLon(20);
+        $articleSearch->setLocationLast(160);
+        $filter = new \Elastica\Filter\GeoDistance('location', $articleSearch->getLocation(), '');
+        $filter->setDistance('1km');
+
+        $query = new MatchAll();
+
+        $filtered = new \Elastica\Query\Filtered($query, $filter);
+
+        $query = \Elastica\Query::create($filtered);
+        return $this->find($query);
     }
 }

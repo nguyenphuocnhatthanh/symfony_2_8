@@ -49,6 +49,34 @@ class Article
     protected $publishedAt;
 
     /**
+     * @var
+     * @ORM\Column(type="float")
+     */
+    protected $lattitude;
+
+    /**
+     * @var
+     * @ORM\Column(type="float")
+     */
+    protected $longtitude;
+
+    /**
+     * @return mixed
+     */
+    public function getLongtitude()
+    {
+        return $this->longtitude;
+    }
+
+    /**
+     * @param mixed $longtitude
+     */
+    public function setLongtitude($longtitude)
+    {
+        $this->longtitude = $longtitude;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()
@@ -67,7 +95,7 @@ class Article
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -90,7 +118,7 @@ class Article
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -113,7 +141,7 @@ class Article
     /**
      * Get content
      *
-     * @return string 
+     * @return string
      */
     public function getContent()
     {
@@ -136,7 +164,7 @@ class Article
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -159,10 +187,32 @@ class Article
     /**
      * Get publishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getPublishedAt()
     {
         return $this->publishedAt;
+    }
+
+
+    public function getLocation()
+    {
+        return ['lon' => $this->getLongtitude(), 'lat' => $this->getLattitude()];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLattitude()
+    {
+        return $this->lattitude;
+    }
+
+    /**
+     * @param mixed $lattitude
+     */
+    public function setLattitude($lattitude)
+    {
+        $this->lattitude = $lattitude;
     }
 }
