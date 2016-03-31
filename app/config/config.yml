@@ -111,7 +111,7 @@ fos_oauth_server:
     auth_code_class:     AppBundle\Entity\AuthCode
     service:
             user_provider: fos_user.user_manager
-
-services:
-    fos_user.doctrine_registry:
-        alias: doctrine
+fos_user:
+    db_driver: orm
+    user_class: AppBundle\Entity\User
+    firewall_name: main

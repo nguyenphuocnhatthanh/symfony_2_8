@@ -19,5 +19,6 @@ services:
       tags:
           - { name: form.type, alias: article_form }
 
-  app.app_bundle.handler.article_handler:
-      arguments: ["@doctrine.orm.entity_manage", "@form.factory", "@app.app_bundle.form.type.article"]
+  app.app_bundle.form.handler.form_handle:
+      class: AppBundle\Form\Handler\Form_Handler
+      arguments: ["@@doctrine.orm.entity_manage", "@@form.factory", "@@app.app_bundle.form.type.article"]
