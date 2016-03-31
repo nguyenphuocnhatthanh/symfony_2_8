@@ -27,7 +27,7 @@ class ArticleController extends Controller
             $articleSearch = $articleSearchForm->getData();
             $elasticaManager = $this->get('fos_elastica.manager');
             $results = $elasticaManager->getRepository('AppBundle:Article')->search($articleSearch);
-            die(dump($results));
+//            die(dump($results));
         }
 
 

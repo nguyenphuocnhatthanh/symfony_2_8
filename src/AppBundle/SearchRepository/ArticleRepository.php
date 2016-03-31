@@ -19,12 +19,14 @@ class ArticleRepository extends Repository
 {
     public function search(ArticleSearch $articleSearch)
     {
-        /*if ($articleSearch->getTitle() != null && $articleSearch != '') {
-            $query = new \Elastica\Query\Match();
-            $query->setFieldQuery('article.title', $articleSearch->getTitle());
-            $query->setFieldFuzziness('article.title', 0.7);
-            $query->setFieldMinimumShouldMatch('article.title', '80%');
-            //
+        if ($articleSearch->getTitle() != null && $articleSearch != '') {
+            $query = new \Elastica\Query\MultiMatch();
+            $query->setFields(['title', 'content']);
+            $query->setQuery($articleSearch->getTitle());
+//            $query->setFieldQuery('article.title', $articleSearch->getTitle());
+//            $query->setFieldFuzziness('article.title', 0.7);
+//            $query->setFieldMinimumShouldMatch('article.title', '80%');
+//            $query->setFieldQuery('article.content', 'test');
         } else {
             $query = new \Elastica\Query\MatchAll();
         }
@@ -54,9 +56,9 @@ class ArticleRepository extends Repository
 
         $query = \Elastica\Query::create($filtered);
 
-        return $this->find($query);*/
+        return $this->find($query);
 
-        $query = new Query();
+        /*$query = new Query();
         $articleSearch->setLocationLon(20);
         $articleSearch->setLocationLast(160);
         $filter = new \Elastica\Filter\GeoDistance('location', $articleSearch->getLocation(), '');
@@ -67,6 +69,6 @@ class ArticleRepository extends Repository
         $filtered = new \Elastica\Query\Filtered($query, $filter);
 
         $query = \Elastica\Query::create($filtered);
-        return $this->find($query);
+        return $this->find($query);*/
     }
 }

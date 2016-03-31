@@ -72,6 +72,13 @@ fos_elastica:
         app:
             index_name: app_%kernel.environment%
             client: default
+            settings:
+                index:
+                analysis:
+                    analyzer:
+                        my_analyzer:
+                            tokenizer: standard
+                            filter   : [lowercase, asciifolding]
             types:
                 article:
                     mappings:
@@ -85,7 +92,9 @@ fos_elastica:
                             type : boolean
                         title :
                             type: string
-                        content : ~
+                        content :
+                            type: string
+                            analyzer: my_analyzer
                         location:
                             type: geo_point
                     persistence:
@@ -94,3 +103,15 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener: ~
+fos_oauth_server:
+    db_driver: orm       # Drivers available: orm, mongodb, or propel
+    client_class:        AppBundle\Entity\Client
+    access_token_class:  AppBundle\Entity\AccessToken
+    refresh_token_class: AppBundle\Entity\RefreshToken
+    auth_code_class:     AppBundle\Entity\AuthCode
+    service:
+            user_provider: fos_user.user_manager
+
+services:
+    fos_user.doctrine_registry:
+        alias: doctrine
