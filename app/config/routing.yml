@@ -21,6 +21,16 @@ fos_oauth_server_token:
 
 fos_oauth_server_authorize:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+rest_test_api:
+    type:     rest
+    resource: "@AppBundle/Resources/config/routing.yml"
+    prefix: /api

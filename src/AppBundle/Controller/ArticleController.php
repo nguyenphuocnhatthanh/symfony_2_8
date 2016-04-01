@@ -2,13 +2,18 @@
 
 namespace AppBundle\Controller;
 
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\ArticleSearchType;
 use AppBundle\Model\ArticleSearch;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ArticleController extends Controller
+class ArticleController extends FOSRestController
 {
     /**
      * @Route("/article")
@@ -35,5 +40,48 @@ class ArticleController extends Controller
             'results' => !empty($results) ? $results : [],
             'form' => $articleSearchForm->createView(),
         ));
+    }
+
+    /**
+     * @QueryParam(name="limit", requirements="\d+",  description="our limit")
+     * @QueryParam(name="offset", requirements="\d+", nullable=true, default="0", description="our offset")
+     *
+     * @param Request $request
+     * @param ParamFetcherInterface $paramFetcherInterface
+     * @return mixed
+     */
+    public function getArticlesAction(Request $request, ParamFetcherInterface $paramFetcherInterface)
+    {
+        die('1');
+        $limit = $paramFetcherInterface->get('limit');
+        $offset = $paramFetcherInterface->get('offset');
+
+        return $this->getHandler()->all([
+            'criteria' => [],
+            'order' => [],
+            'limit' => $limit,
+            'offset' => $offset
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     */
+    public function patchArticleAction(Request $request, $id)
+    {
+        try {
+            $article = $this->getHandler()->get($id);
+            $article = $this->getHandler()->patch($article, $request->request->all());
+
+            return $article;
+        } catch (NotFoundHttpException $e) {
+            return $e->getMessage();
+        }
+    }
+
+    private function getHandler()
+    {
+        return $this->get('app.app_bundle.handler.article_handle');
     }
 }

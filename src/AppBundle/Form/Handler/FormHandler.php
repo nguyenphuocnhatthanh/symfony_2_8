@@ -33,7 +33,7 @@ class FormHandler
         if (!$form->isValid()) {
             return $form->getErrors();
         }
-
+die(dump($params, $form->getData()));
         $data = $form->getData();
         $this->em->persist($data);
         $this->em->flush();

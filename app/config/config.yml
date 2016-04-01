@@ -30,7 +30,8 @@ framework:
         handler_id:  ~
     fragments:       ~
     http_method_override: true
-
+    serializer:
+        enabled: true
 # Twig Configuration
 twig:
     debug:            "%kernel.debug%"
@@ -115,3 +116,14 @@ fos_user:
     db_driver: orm
     user_class: AppBundle\Entity\User
     firewall_name: main
+fos_rest:
+    view:
+        view_response_listener: 'force'
+    format_listener:
+        rules:
+            - { path: ^/api, priorities: [ json ], fallback_format: json, prefer_extension: true }
+            - { path: ^/, priorities: [ html ], fallback_format: html, prefer_extension: true }
+    routing_loader:
+          include_format: false
+    param_fetcher_listener: true
+nelmio_api_doc: ~

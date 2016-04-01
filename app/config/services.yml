@@ -7,18 +7,26 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-  app.post_voter:
-      class: AppBundle\Security\PostVoter
-      tags:
-          - { name: security.voter }
-      # small performance boost
-      public: false
+    app.post_voter:
+        class: AppBundle\Security\PostVoter
+        tags:
+            - { name: security.voter }
+        # small performance boost
+        public: false
+    app.app_bundle.article_repository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ["@doctrine.orm.entity_manager", getRepository]
+        arguments:
+            - AppBundle\Entity\Article
+    app.app_bundle.handler.article_handle:
+        class: AppBundle\Handler\ArticleHandler
+        arguments: ["@app.app_bundle.article_repository", "@app.app_bundle.form.handler.form_handle"]
 
-  app.app_bundle.form.type.article:
-      class: AppBundle\Form\Type\ArticleType
-      tags:
-          - { name: form.type, alias: article_form }
+    app.app_bundle.form.type.article:
+        class: AppBundle\Form\Type\ArticleType
+        tags:
+            - { name: form.type, alias: article_form }
 
-  app.app_bundle.form.handler.form_handle:
-      class: AppBundle\Form\Handler\Form_Handler
-      arguments: ["@@doctrine.orm.entity_manage", "@@form.factory", "@@app.app_bundle.form.type.article"]
+    app.app_bundle.form.handler.form_handle:
+        class: AppBundle\Form\Handler\FormHandler
+        arguments: ["@doctrine.orm.entity_manager", "@form.factory", "@app.app_bundle.form.type.article"]

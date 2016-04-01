@@ -14,7 +14,7 @@ class ArticleHandler implements HandlerInterface
     private $article;
     private $form;
 
-    public function __construct(ArticleRepository $articleRepository, FormHandler $formHandler)
+    public function __construct(ArticleRepository $articleRepository ,FormHandler $formHandler)
     {
         $this->article = $articleRepository;
         $this->form = $formHandler;
@@ -27,8 +27,8 @@ class ArticleHandler implements HandlerInterface
     {
         $data = $this->article->find($id);
 
-        if (null == $data) {
-            throw new NotFoundHttpException;
+        if (null === $data) {
+            throw new NotFoundHttpException('Not Found article id:'.$id);
         }
 
         return $data;
@@ -64,7 +64,7 @@ class ArticleHandler implements HandlerInterface
      */
     public function put($articleInterface, array $params)
     {
-        if (! $articleInterface instanceof ArticleRepository) {
+        if (! $articleInterface instanceof Article) {
             throw new \Exception('Object not instance');
         }
 
@@ -83,7 +83,7 @@ class ArticleHandler implements HandlerInterface
      */
     public function patch($articleInterface, array $params)
     {
-        if (! $articleInterface instanceof ArticleRepository) {
+        if (! $articleInterface instanceof Article) {
             throw new \Exception('Object not instance');
         }
 
@@ -101,7 +101,7 @@ class ArticleHandler implements HandlerInterface
      */
     public function delete($articleInterface)
     {
-        if (! $articleInterface instanceof ArticleRepository) {
+        if (! $articleInterface instanceof Article) {
             throw new \Exception('Object not instance');
         }
 

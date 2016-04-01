@@ -6,13 +6,15 @@ security:
             id: fos_user.user_provider.username
     firewalls:
         main:
-            anonymous: ~
-            provider: fos_userbundle
+
             form_login:
-               login_path: login
-               check_path: login
-               #valid csrf
-               csrf_token_generator: security.csrf.token_manager
+                provider: fos_userbundle
+                #login_path: login
+                #check_path: login
+                #valid csrf
+                csrf_token_generator: security.csrf.token_manager
+            logout:       true
+            anonymous:    true
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
