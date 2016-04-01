@@ -2,14 +2,12 @@ security:
     providers:
         in_memory:
             memory: ~
-        our_db_provider:
-            entity:
-                class: AppBundle:User
-                property: username
+        fos_userbundle:
+            id: fos_user.user_provider.username
     firewalls:
         main:
             anonymous: ~
-            provider: our_db_provider
+            provider: fos_userbundle
             form_login:
                login_path: login
                check_path: login
@@ -18,25 +16,33 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         oauth_token:
             pattern:    ^/oauth/v2/token
             security:   false
 
         oauth_authorize:
             pattern:    ^/oauth/v2/auth
-            # Add your favorite authentication process here
+            provider:   fos_userbundle
+            http_basic: true
 
-       # api:
-        #    pattern:    ^/api
-       ##     fos_oauth:  true
-       #     stateless:  true
-        #    anonymous:  false # can be omitted as its default value
-
+        api:
+            pattern:    ^/api
+            fos_oauth:  true
+            stateless:  true
+            anonymous:  false # can be omitted as its default value
         default:
             anonymous: ~
             http_basic: ~
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
     access_control:
         # require ROLE_ADMIN for /admin*
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: ROLE_ADMIN }
     encoders:
         AppBundle\Entity\User: bcrypt
