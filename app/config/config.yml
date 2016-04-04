@@ -111,7 +111,12 @@ fos_oauth_server:
     refresh_token_class: AppBundle\Entity\RefreshToken
     auth_code_class:     AppBundle\Entity\AuthCode
     service:
-            user_provider: fos_user.user_manager
+        user_provider: fos_user.user_manager
+        options:
+              access_token_lifetime: 3600
+              refresh_token_lifetime: 1209600
+              auth_code_lifetime: 30
+              supported_scopes: aaa bbb 111 222
 fos_user:
     db_driver: orm
     user_class: AppBundle\Entity\User

@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\OAuthServerBundle\Document\AccessToken as BaseAccessToken;
+use FOS\OAuthServerBundle\Entity\AccessToken as BaseAccessToken;
 use FOS\OAuthServerBundle\Model\ClientInterface;
 
 /**
@@ -27,7 +27,7 @@ class AccessToken extends BaseAccessToken
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {

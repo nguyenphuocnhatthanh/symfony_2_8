@@ -52,7 +52,6 @@ class ArticleController extends FOSRestController
      */
     public function getArticlesAction(Request $request, ParamFetcherInterface $paramFetcherInterface)
     {
-        die('1');
         $limit = $paramFetcherInterface->get('limit');
         $offset = $paramFetcherInterface->get('offset');
 

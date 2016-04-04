@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\OAuthServerBundle\Document\AccessToken as BaseAccessToken;
+use FOS\OAuthServerBundle\Entity\RefreshToken as BaseRefreshToken;
 use FOS\OAuthServerBundle\Model\ClientInterface;
 
 /**
@@ -12,7 +12,7 @@ use FOS\OAuthServerBundle\Model\ClientInterface;
  * @ORM\Table(name="refresh_token")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RefreshTokenRepository")
  */
-class RefreshToken extends BaseAccessToken
+class RefreshToken extends BaseRefreshToken
 {
     /**
      * @var int

@@ -88,4 +88,27 @@ class User extends BaseUser
     {
         return $this->allowedClients;
     }
+
+    /**
+     * Add allowedClients
+     *
+     * @param \AppBundle\Entity\Client $allowedClients
+     * @return User
+     */
+    public function addAllowedClient(\AppBundle\Entity\Client $allowedClients)
+    {
+        $this->allowedClients[] = $allowedClients;
+
+        return $this;
+    }
+
+    /**
+     * Remove allowedClients
+     *
+     * @param \AppBundle\Entity\Client $allowedClients
+     */
+    public function removeAllowedClient(\AppBundle\Entity\Client $allowedClients)
+    {
+        $this->allowedClients->removeElement($allowedClients);
+    }
 }
