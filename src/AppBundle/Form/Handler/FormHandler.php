@@ -4,6 +4,8 @@
 namespace AppBundle\Form\Handler;
 
 
+use AppBundle\Form\FormErrorsSerializer;
+use AppBundle\Form\FormInvalidException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
@@ -13,12 +15,14 @@ class FormHandler
     private $em;
     private $formFactory;
     private $formType;
+    private $formErrorSerializer;
 
-    public function __construct(ObjectManager $objectManager, FormFactoryInterface $factoryInterface, FormTypeInterface $formTypeInterface)
+    public function __construct(ObjectManager $objectManager, FormFactoryInterface $factoryInterface, FormTypeInterface $formTypeInterface, FormErrorsSerializer $formErrorsSerializer)
     {
         $this->em = $objectManager;
         $this->formFactory = $factoryInterface;
         $this->formType = $formTypeInterface;
+        $this->formErrorSerializer = $formErrorsSerializer;
     }
 
     public function processForm($object, array $params, $method)
@@ -30,10 +34,12 @@ class FormHandler
 
         $form->submit($params, 'PATCH' !== $method);
 
+
         if (!$form->isValid()) {
-            return $form->getErrors();
+//            return $this->formError->serializeFormErrors($form, TRUE, TRUE);
+            throw new FormInvalidException($form, FormInvalidException::DEFAULT_ERROR_MESSAGE, $this->formErrorSerializer);
         }
-die(dump($params, $form->getData()));
+
         $data = $form->getData();
         $this->em->persist($data);
         $this->em->flush();

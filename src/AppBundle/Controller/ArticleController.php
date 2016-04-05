@@ -2,12 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\FormInvalidException;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Form\ArticleSearchType;
 use AppBundle\Model\ArticleSearch;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,6 +78,20 @@ class ArticleController extends FOSRestController
             return $article;
         } catch (NotFoundHttpException $e) {
             return $e->getMessage();
+        }
+    }
+
+    public function postArticleAction(Request $request)
+    {
+        try {
+            $response = ['status' => Response::HTTP_CREATED,
+                'data' => $this->getHandler()->post(
+                $request->request->all()
+            )];
+
+            return $response;
+        } catch (FormInvalidException $e) {
+            return $this->view($e->getForm(), 400);
         }
     }
 

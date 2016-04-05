@@ -7,6 +7,8 @@ services:
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    form_serializer:
+        class: AppBundle\Form\FormErrorsSerializer
     app.post_voter:
         class: AppBundle\Security\PostVoter
         tags:
@@ -29,4 +31,4 @@ services:
 
     app.app_bundle.form.handler.form_handle:
         class: AppBundle\Form\Handler\FormHandler
-        arguments: ["@doctrine.orm.entity_manager", "@form.factory", "@app.app_bundle.form.type.article"]
+        arguments: ["@doctrine.orm.entity_manager", "@form.factory", "@app.app_bundle.form.type.article", "@form_serializer"]

@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use FOS\ElasticaBundle\Configuration\Search;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Article
@@ -28,6 +29,7 @@ class Article
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=250, nullable=false)
+     * @Assert\NotBlank(message="The title cannot blank")
      */
     protected $title;
 
@@ -35,6 +37,7 @@ class Article
      * @var string
      *
      * @ORM\Column(type="text", nullable=false)
+     * @Assert\NotBlank(message="The Content cannot blank")
      */
     protected $content;
 
