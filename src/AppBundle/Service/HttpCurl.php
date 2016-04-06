@@ -164,6 +164,7 @@ class HttpCurl
 
         timer_start('curl_' . __FUNCTION__);
 
+
         // Set the proxy settings.
         $this->_setProxySettings();
 
@@ -374,6 +375,7 @@ class HttpCurl
         curl_setopt($this->_ch, CURLOPT_SSL_VERIFYHOST, $this->options['verify_ssl']);
         curl_setopt($this->_ch, CURLOPT_MAXREDIRS, $this->options['max_redirects']);
 
+
         // Remove the user agent from the headers as it is already set
         unset($this->options['headers']['User-Agent']);
     }
@@ -489,6 +491,7 @@ class HttpCurl
             foreach ($this->options['headers'] as $key => $value) {
                 $headers[] = trim($key) . ": " . trim($value);
             }
+
             curl_setopt($this->_ch, CURLOPT_HTTPHEADER, $headers);
         }
     }

@@ -38,4 +38,36 @@ class DefaultController extends Controller
         $temp = $text_master->request();
         die;
     }
+
+    /**
+     * @Route("/create_project")
+     */
+    public function createProjectAction()
+    {
+        $text_master = new TextMasterApi();
+        $param_prj = [
+            'project' => [
+                'name' => 'name project',
+                'activity_name' => 'test test test',
+                'level_name' => 'test',
+                'options' => [
+                    'language_level' => 'premium',
+                    'expertise' => '54e1d07d868aa244ac31ea01'
+                ],
+                'language_from' => 'fr-fr',
+                'language_to' => 'fr-fr',
+                'category' => 'C014',
+                'project_briefing' => 'test',
+                'deadline' => '2016-05-05',
+            ]
+        ];
+        $params = [
+            'data' => json_encode($param_prj)
+        ];
+
+//        die(dump($params));
+//        $text_master->request();
+        $temp = $text_master->createProject($params);
+        die;
+    }
 }

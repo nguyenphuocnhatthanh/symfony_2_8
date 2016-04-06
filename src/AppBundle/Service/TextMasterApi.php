@@ -8,21 +8,29 @@ class TextMasterApi
     const API_BASE_URL = "http://api.textmaster.com/"; //"http://api.staging.textmaster.com/";
     const API_VERSION = "beta";
 
-    public function request($path = '', $method = 'GET', $content= '')
+    public function request($path = '', $method = 'GET', $params = [])
     {
-        $body = $this->_baseRequest($path, $method, $content);
+        $date = gmdate('Y-m-d H:i:s');
+        $signature = sha1(self::API_SECRET . $date);
+        $params = array_merge([
+            "APIKEY " => self::API_KEY,
+            "DATE " => $date,
+            "SIGNATURE" => $signature,
+            "Content-Type" => "application/json"
+        ], $params);
+        $body = $this->_baseRequest($path, $method, $params);
 
         print $body->data;
     }
 
-    private function _baseRequest($path = "", $method = "", $content = "")
+    private function _baseRequest($path = "", $method = "", array $params = [])
     {
-        list($path, $method, $content) = $this->_switchToDefaultIfBlank($path, $method, $content);
+        list($path, $method) = $this->_switchToDefaultIfBlank($path, $method);
 
         $curl = new HttpCurl(self::API_BASE_URL.$path, [
             'method' => strtoupper($method),
             'headers' => $this->_getAuthHeader(),
-            'content' => $content
+            'data' => $params
         ]);
         return $curl->request();
 
@@ -32,14 +40,13 @@ class TextMasterApi
 //            $this->_createContext($method, $content));
     }
 
-    private function _switchToDefaultIfBlank($path, $method, $content)
+    private function _switchToDefaultIfBlank($path, $method)
     {
         $base_request_default = array("path" => "test", "method" => "GET", "content" => array(), "api_section" => self::API_VERSION . "/clients/");
         $path = ($path == "") ? $base_request_default["path"] : $base_request_default["api_section"] . $path;
         $method = ($method == "") ? $base_request_default["method"] : $method;
-        $content = ($content == "") ? $base_request_default["content"] : $content;
 
-        return [$path, $method, $content];
+        return [$path, $method];
     }
 
     private function _getAuthHeader()
@@ -47,8 +54,10 @@ class TextMasterApi
         $date = gmdate('Y-m-d H:i:s');
         $signature = sha1(self::API_SECRET . $date);
         return [
-            "APIKEY: " . self::API_KEY . "\r\n" . "DATE: " . $date . "\r\n" .
-            "SIGNATURE: " . $signature . "\r\n" . "Content-Type: application/json"
+            "APIKEY " => self::API_KEY,
+            "DATE " => $date,
+            "SIGNATURE" => $signature,
+            "Content-Type" => "application/json"
         ];
     }
 
@@ -62,5 +71,10 @@ class TextMasterApi
             )
         );
         return stream_context_create($options);
+    }
+
+    public function createProject($params)
+    {
+        $this->request('projects', 'POST', $params);
     }
 }
