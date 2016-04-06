@@ -6,24 +6,16 @@ class TextMasterApi
     const API_KEY = "uZAE1fqIzyA";
     const API_SECRET = "m5MOLO-8o0s";
     const API_BASE_URL = "http://api.textmaster.com/"; //"http://api.staging.textmaster.com/";
-    const API_VERSION = "beta";
+    const API_VERSION = "v1";
 
     public function request($path = '', $method = 'GET', $params = [])
     {
-        $date = gmdate('Y-m-d H:i:s');
-        $signature = sha1(self::API_SECRET . $date);
-        $params = array_merge([
-            "APIKEY " => self::API_KEY,
-            "DATE " => $date,
-            "SIGNATURE" => $signature,
-            "Content-Type" => "application/json"
-        ], $params);
         $body = $this->_baseRequest($path, $method, $params);
 
         print $body->data;
     }
 
-    private function _baseRequest($path = "", $method = "", array $params = [])
+    private function _baseRequest($path = "", $method = "", $params)
     {
         list($path, $method) = $this->_switchToDefaultIfBlank($path, $method);
 

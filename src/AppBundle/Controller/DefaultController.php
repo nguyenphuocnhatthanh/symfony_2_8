@@ -45,26 +45,28 @@ class DefaultController extends Controller
     public function createProjectAction()
     {
         $text_master = new TextMasterApi();
-        $param_prj = [
+        $params = json_encode([
             'project' => [
-                'name' => 'name project',
-                'activity_name' => 'test test test',
-                'level_name' => 'test',
+                'name' => 'translatetor test',
+                'activity_name' => 'translation',
                 'options' => [
-                    'language_level' => 'premium',
-                    'expertise' => '54e1d07d868aa244ac31ea01'
+                    'language_level' => 'enterprise',
+                    'quality' => true,
+                    'expertise' => '559564bc736f7617da000545'
                 ],
-                'language_from' => 'fr-fr',
-                'language_to' => 'fr-fr',
-                'category' => 'C014',
-                'project_briefing' => 'test',
-                'deadline' => '2016-05-05',
-            ]
-        ];
-        $params = [
-            'data' => json_encode($param_prj)
-        ];
+                'vocabulary_type' => 'not_specified',
+                'target_reader_groups' => 'not_specified',
+                'grammatical_person' => 'not_specified',
 
+                'language_from' => 'fr-fr',
+                'language_to' => 'en-gb',
+                'category' => 'C014',
+                'project_briefing' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\n    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n    ullamco labo',
+//                'deadline' => '2016-05-05',
+            ]
+        ]);
+
+//        $json = '{"project":{"name":"factory_project","ctype":"proofreading","language_from":"fr-fr","language_to":"fr-fr","category":"C014","vocabulary_type":"not_specified","target_reader_groups":"not_specified","grammatical_person":"not_specified","project_briefing":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod\n    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n    ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n    voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non\n    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.","options":{"language_level":"premium","expertise":"559564bc736f7617da000545"}}}';
 //        die(dump($params));
 //        $text_master->request();
         $temp = $text_master->createProject($params);

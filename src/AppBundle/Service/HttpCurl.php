@@ -14,7 +14,7 @@ class HttpCurl
      * @var array
      */
     public $options = [
-        'headers' => ['User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36'],
+        'headers' => ['User-Agent' => "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36"],
         'method' => 'GET',
         'data' => NULL,
         'max_redirects' => 3,
@@ -296,9 +296,11 @@ class HttpCurl
 
         // RFC 2616 states that all unknown HTTP codes must be treated the same as the
         // base code in their class.
+
         if (!isset($responses[$code])) {
             $code = floor($code / 100) * 100;
         }
+
         $result->code = $code;
 
         switch ($code) {
@@ -451,6 +453,7 @@ class HttpCurl
                 break;
             case 'POST':
                 // Assign the data to the proper cURL option
+
                 curl_setopt($this->_ch, CURLOPT_POSTFIELDS, $this->options['data']);
 
                 if (isset($this->options['multipart']) && TRUE === $this->options['multipart']) {
@@ -550,6 +553,7 @@ class HttpCurl
             415 => 'Unsupported Media Type',
             416 => 'Requested range not satisfiable',
             417 => 'Expectation Failed',
+            422 => 'HTTP UNPROCESSABLE ENTITY',
             500 => 'Internal Server Error',
             501 => 'Not Implemented',
             502 => 'Bad Gateway',
