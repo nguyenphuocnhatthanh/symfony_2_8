@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Service\TextMasterApi;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,5 +27,15 @@ class DefaultController extends Controller
     public function adminAction()
     {
         return new Response('<html><body>Admin page!</body></html>');
+    }
+
+    /**
+     * @Route("/textmaster")
+     */
+    public function testApiAction()
+    {
+        $text_master = new TextMasterApi();
+        $temp = $text_master->request();
+        die;
     }
 }

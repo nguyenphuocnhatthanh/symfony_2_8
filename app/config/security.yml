@@ -22,7 +22,7 @@ security:
             pattern:    ^/api
             fos_oauth:  true
             stateless:  true
-            anonymous:  false # can be omitted as its default value
+            anonymous:  true # can be omitted as its default value
         main:
             form_login:
                 provider: fos_userbundle

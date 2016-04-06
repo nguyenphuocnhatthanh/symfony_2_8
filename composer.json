@@ -9,6 +9,9 @@
         "classmap": [
             "app/AppKernel.php",
             "app/AppCache.php"
+        ],
+        "files": [
+            "src/AppBundle/Helper/functions.php"
         ]
     },
     "require": {

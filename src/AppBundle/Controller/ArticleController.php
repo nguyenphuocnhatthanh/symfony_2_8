@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class ArticleController extends FOSRestController
 {
@@ -45,6 +46,18 @@ class ArticleController extends FOSRestController
     }
 
     /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Returns a collection of Artists",
+     *  section="Artists",
+     *  requirements={
+     *      {"name"="limit", "dataType"="integer", "requirement"="\d+", "description"="the max number of records to return"}
+     *  },
+     *  parameters={
+     *      {"name"="limit", "dataType"="integer", "required"=true, "description"="the max number of records to return"},
+     *      {"name"="offset", "dataType"="integer", "required"=false, "description"="the record number to start results at"}
+     *  }
+     * )
      * @QueryParam(name="limit", requirements="\d+",  description="our limit")
      * @QueryParam(name="offset", requirements="\d+", nullable=true, default="0", description="our offset")
      *
@@ -81,6 +94,21 @@ class ArticleController extends FOSRestController
         }
     }
 
+    /**
+     * @ApiDoc(
+     *  resource=true,
+     *  description="Replaces an existing Article",
+     *  input = "AppBundle\Form\Type\ArticleType",
+     *  output = "AppBundle\Form\Type\ArticleType",
+     *  section="Artists",
+     *  statusCodes={
+     *         201="Returned when a new Article has been successfully created",
+     *         400="Returned when the posted data is invalid"
+     *     }
+     * )
+     * @param Request $request
+     * @return array|\FOS\RestBundle\View\View
+     */
     public function postArticleAction(Request $request)
     {
         try {
