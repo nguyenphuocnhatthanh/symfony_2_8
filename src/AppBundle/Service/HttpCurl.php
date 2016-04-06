@@ -366,7 +366,6 @@ class HttpCurl
         curl_setopt($this->_ch, CURLOPT_USERAGENT, $this->options['headers']['User-Agent']);
         curl_setopt($this->_ch, CURLINFO_HEADER_OUT, TRUE);
         curl_setopt($this->_ch, CURLOPT_URL, $this->url);
-        curl_setopt($this->_ch, CURLOPT_HTTPHEADER, $this->options['header']);
         curl_setopt($this->_ch, CURLOPT_TIMEOUT, $this->options['timeout']);
         curl_setopt($this->_ch, CURLOPT_CONNECTTIMEOUT, 0);
         curl_setopt($this->_ch, CURLOPT_FOLLOWLOCATION, TRUE);
