@@ -5,12 +5,15 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Validator\Constraints as AssertBundle;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Project
  *
  * @ORM\Table(name="project")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectRepository")
+ * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "validate"})
+ * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "test"})
  */
 class Project
 {
@@ -52,13 +55,14 @@ class Project
     /**
      * @var string
      * @Assert\NotBlank
-     * @AssertBundle\ContainsLanguageToProject(callback="getLanguageFromForCallBack")
+     * @AssertBundle\ContainsLanguageToProject()
      */
     protected $languageFrom;
 
-    public static $langFrom;
     /**
      * @var string
+     * @Assert\NotBlank
+     * @AssertBundle\ContainsLanguageToProject()
      */
     protected $languageTo;
 
@@ -239,13 +243,15 @@ class Project
         $this->targetReaderGroups = $targetReaderGroups;
         $this->textmasters = $textmasters;
         $this->documents = $documents;
-        self::$langFrom = $languageFrom;
     }
 
-
-    public static function getLanguageFromForCallBack()
+    public function validate(ExecutionContextInterface $context)
     {
-        return self::$langFrom;
+        if ($this->getLanguageTo() == $this->getLanguageFrom()) {
+            $context->buildViolation('The language to not valid hehe.')
+                ->atPath('language_to')
+                ->addViolation();
+        }
     }
     /**
      * Get id

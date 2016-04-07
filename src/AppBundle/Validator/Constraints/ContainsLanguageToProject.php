@@ -10,11 +10,4 @@ use Symfony\Component\Validator\Constraint;
 class ContainsLanguageToProject extends Constraint
 {
     public $message = 'The language to "%string%" is not valid.';
-
-    public $callback;
-
-    public function getRequiredOptions()
-    {
-        return array('callback');
-    }
 }

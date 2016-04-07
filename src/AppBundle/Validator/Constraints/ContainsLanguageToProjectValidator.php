@@ -28,19 +28,8 @@ class ContainsLanguageToProjectValidator extends ConstraintValidator
         }
 
         $langs = languagesSupportByTextmaster();
-        if (!is_callable($language_to = array($this->context->getClassName(), $constraint->callback))
-            && !is_callable($language_to = $constraint->callback)
-        ) {
-            throw new ConstraintDefinitionException('The Choice constraint expects a valid callback');
-        } else {
 
-            $language_to = call_user_func($language_to);
-            die(dump($language_to));
-        }
-
-
-
-        if (!in_array($value, $langs) || $value == $language_to) {
+        if (!in_array($value, $langs)) {
             $this->context->addViolation($constraint->message, [
                 '%string%' => $value
             ]);
