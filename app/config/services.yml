@@ -32,3 +32,7 @@ services:
     app.app_bundle.form.handler.form_handle:
         class: AppBundle\Form\Handler\FormHandler
         arguments: ["@doctrine.orm.entity_manager", "@form.factory", "@app.app_bundle.form.type.article", "@form_serializer"]
+    validator.language_from_project:
+        class: AppBundle\Validator\Constraints\ContainsLanguageToProjectValidator
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }

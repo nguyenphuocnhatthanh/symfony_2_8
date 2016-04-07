@@ -45,3 +45,11 @@ function timer_read($name) {
     }
     return $timers[$name]['time'];
 }
+
+function languagesSupportByTextmaster() {
+    return [
+        "ar-sa", "bg-bg", "bs-ba", "cs-cz", "da-dk", "de-de", "el-gr", "en-us", "en-gb", "es-es", "fi-fi",
+        "fr-fr", "hr-hr", "hu-hu", "it-it", "ja-jp", "ko-kr", "nl-be", "nl-nl", "no-no", "pl-pl", "pt-br",
+        "pt-pt", "ro-ro", "ru-ru", "sk-sk", "sl-si", "sr-rs", "sv-se", "tr-tr", "zh-cn"
+    ];
+}

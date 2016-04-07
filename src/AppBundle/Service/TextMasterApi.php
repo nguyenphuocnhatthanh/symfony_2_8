@@ -67,6 +67,7 @@ class TextMasterApi
 
     public function createProject($params)
     {
+//        die($params);
         $this->request('projects', 'POST', $params);
     }
 }

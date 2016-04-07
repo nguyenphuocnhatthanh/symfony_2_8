@@ -82,11 +82,12 @@ class ArticleController extends FOSRestController
      * @param Request $request
      * @param $id
      */
-    public function patchArticleAction(Request $request, $id)
+    public function putArticleAction(Request $request, $id)
     {
         try {
+            die(dump($request->request->all()));
             $article = $this->getHandler()->get($id);
-            $article = $this->getHandler()->patch($article, $request->request->all());
+            $article = $this->getHandler()->put($article, $request->request->all());
 
             return $article;
         } catch (NotFoundHttpException $e) {
