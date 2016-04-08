@@ -1,18 +1,24 @@
 <?php
 namespace AppBundle\Service;
 
-class TextMasterApi
+use AppBundle\Exception\JsonNotValidException;
+
+class TextMasterService
 {
     const API_KEY = "uZAE1fqIzyA";
     const API_SECRET = "m5MOLO-8o0s";
     const API_BASE_URL = "http://api.textmaster.com/"; //"http://api.staging.textmaster.com/";
     const API_VERSION = "v1";
 
-    public function request($path = '', $method = 'GET', $params = [])
+    private function request($path = '', $method = 'GET', $params = [])
     {
         $body = $this->_baseRequest($path, $method, $params);
 
-        print $body->data;
+        if (empty($body)) {
+            throw new \HttpException('Server Error.');
+        }
+
+        return $this->handlerDataResponse($body);
     }
 
     private function _baseRequest($path = "", $method = "", $params)
@@ -67,7 +73,30 @@ class TextMasterApi
 
     public function createProject($params)
     {
-//        die($params);
-        $this->request('projects', 'POST', $params);
+        return $this->request('projects', 'POST', $params);
     }
+
+    public function updateProject()
+    {
+        
+    }
+
+    private function handlerDataResponse($data)
+    {
+        $result = json_decode($data->data, TRUE);
+
+        if (json_last_error() == JSON_ERROR_NONE) {
+            if (200 == $data->code) {
+                return $result;
+            }
+
+            $result['code'] = $data->code;
+            $result['message'] = $data->status_message;
+
+            return $result;
+        }
+
+        throw new JsonNotValidException;
+    }
+
 }

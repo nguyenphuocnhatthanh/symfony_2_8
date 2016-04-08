@@ -24,15 +24,32 @@ services:
         class: AppBundle\Handler\ArticleHandler
         arguments: ["@app.app_bundle.article_repository", "@app.app_bundle.form.handler.form_handle"]
 
+    app.app_bundle.handler.project_handler:
+        class: AppBundle\Handler\ProjectHandler
+        arguments: ["@validator"]
+
     app.app_bundle.form.type.article:
         class: AppBundle\Form\Type\ArticleType
         tags:
             - { name: form.type, alias: article_form }
+
+    app.app_bundle.form.type.project:
+        class: AppBundle\Form\Type\ProjectType
+        tags:
+            - { name: form.type, alias: project_form }
 
     app.app_bundle.form.handler.form_handle:
         class: AppBundle\Form\Handler\FormHandler
         arguments: ["@doctrine.orm.entity_manager", "@form.factory", "@app.app_bundle.form.type.article", "@form_serializer"]
     validator.language_from_project:
         class: AppBundle\Validator\Constraints\ContainsLanguageToProjectValidator
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+    validator.category_textmaster:
+        class: AppBundle\Validator\Constraints\ContainsCategoryValidator
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+    validator.options_project:
+        class: AppBundle\Validator\Constraints\ContainsOptionProjectValidator
         tags:
             - { name: validator.constraint_validator, alias: alias_name }

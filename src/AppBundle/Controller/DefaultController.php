@@ -6,7 +6,7 @@ use AppBundle\Entity\Project;
 use AppBundle\Exception\HandlerErrorsApi;
 use AppBundle\Exception\TableNotMappingException;
 use AppBundle\Service\ApiValidate;
-use AppBundle\Service\TextMasterApi;
+use AppBundle\Service\TextMasterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,7 @@ class DefaultController extends Controller
      */
     public function createProjectAction(Request $request)
     {
-        $text_master = new TextMasterApi();
+        $text_master = new TextMasterService();
         $apiValidate = new ApiValidate();
 
 
@@ -106,9 +106,9 @@ class DefaultController extends Controller
         } catch (TableNotMappingException $e) {
             return $e->getMessage();
         }
-//die(dump());
+
         $params = $request->request->all();
-//        $text_master->request();
+
         $temp = $text_master->createProject(json_encode($params));
         die;
     }

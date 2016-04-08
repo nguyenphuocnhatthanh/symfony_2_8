@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Table(name="project")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectRepository")
  * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "validate"})
- * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "test"})
  */
 class Project
 {
@@ -35,20 +34,8 @@ class Project
     protected $activityName;
 
     /**
-     * @Assert\Collection(
-     *     fields = {
-     *         "language_level" = {
-     *             @Assert\NotBlank(),
-     *             @Assert\Choice(choices = {"regular", "premium", "enterprise"}, message = "The language level not valid.")
-     *         },
-     *         "quality" = {@Assert\Type(type="bool", message="The value {{ value }} is not a valid {{ type }}.")},
-     *         "specific_attachment" = {@Assert\Type(type="bool", message="The value {{ value }} is not a valid {{ type }}.")},
-     *         "priority" = {@Assert\Type(type="bool", message="The value {{ value }} is not a valid {{ type }}.")},
-     *         "uniq_author" = {@Assert\Type(type="bool", message="The value {{ value }} is not a valid {{ type }}.")},
-     *         "expertise" = {@Assert\Type(type="string", message="The value {{ value }} is not a valid {{ type }}.")},
-     *     },
-     *     allowMissingFields = true
-     * )
+     * @Assert\Type(type="array")
+     * @AssertBundle\ContainsOptionProject()
      */
     protected $options;
 
@@ -68,6 +55,8 @@ class Project
 
     /**
      * @var string
+     * @Assert\NotBlank
+     * @AssertBundle\ContainsCategory()
      */
     protected $category;
 
@@ -78,6 +67,7 @@ class Project
 
     /**
      * @var string
+     * @Assert\DateTime()
      */
     protected $deadline;
 
@@ -88,6 +78,7 @@ class Project
 
     /**
      * @var bool
+     * @Assert\Type(type="bool", message="The author should use rich text not valid.")
      */
     protected $authorShouldUseRichText;
 
@@ -98,11 +89,16 @@ class Project
 
     /**
      * @var string
+     * @Assert\Choice(choices = {"not_specified", "popular", "technical", "fictional"}, message = "The vocalulary type not valid.")
      */
     protected $vocabularyType;
 
     /**
      * @var string
+     * @Assert\Choice(choices = {"not_specified", "first_person_singular", "second_person_singular", "third_person_singular_masculine",
+     *     "third_person_singular_feminine", "third_person_singular_neuter", "first_person_plural", "second_person_plural", "third_person_plural"
+     *     },
+     *     message = "The Grammatical persion is not valid.")
      */
     protected $grammaticalPerson;
 
@@ -225,7 +221,7 @@ class Project
      * @param array $textmasters
      * @param array $documents
      */
-    public function __construct($name, $activityName, array $options, $languageFrom, $languageTo, $category, $projectBriefing, $deadline, $projectBriefingIsRich, $authorShouldUseRichText, $workTemplate, $vocabularyType, $grammaticalPerson, $targetReaderGroups, array $textmasters, array $documents)
+    public function createProject($name, $activityName, $options, $languageFrom, $languageTo, $category, $projectBriefing, $deadline = "", $projectBriefingIsRich = "", $authorShouldUseRichText = "", $workTemplate = "", $vocabularyType = "", $grammaticalPerson = "", $targetReaderGroups = "", $textmasters = [], $documents = [])
     {
         $this->name = $name;
         $this->activityName = $activityName;
@@ -243,6 +239,11 @@ class Project
         $this->targetReaderGroups = $targetReaderGroups;
         $this->textmasters = $textmasters;
         $this->documents = $documents;
+    }
+
+    public function __construct()
+    {
+
     }
 
     public function validate(ExecutionContextInterface $context)
