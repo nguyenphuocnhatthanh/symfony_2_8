@@ -20,8 +20,7 @@ class ProjectController extends FOSRestController
     public function postProjectAction(Request $request)
     {
         try {
-            $handler = new ProjectHandler($this->getValidator());
-
+            $handler = $this->getHandler();
             return $handler->post($request->request->all());
         } catch (\Exception $e) {
             return [
@@ -32,12 +31,13 @@ class ProjectController extends FOSRestController
         }
     }
 
+
     /**
-     * Get Service Validator
+     * Get service handler
      * @return object
      */
-    private function getValidator()
+    private function getHandler()
     {
-        return $this->get('validator');
+        return $this->get('app.app_bundle.handler.project_handler');
     }
 }
