@@ -1,9 +1,12 @@
 <?php
 namespace AppBundle\Handler;
 
-use AppBundle\Entity\Project;
-use AppBundle\Exception\HandlerErrorsApi;
+use AppBundle\Form\Type\ProjectType;
+use AppBundle\Service\HandlerErrorsApi;
 use AppBundle\Service\TextMasterService;
+use AppBundle\Service\TransferArrayToObject;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -17,13 +20,25 @@ class ProjectHandler implements HandlerInterface
      */
     private $validate;
 
+    private $form;
+
+    private $projectType;
+
+    private $om;
+
     /**
      * ProjectHandlerApi constructor.
-     * @param $validate
+     * @param ValidatorInterface $validate
+     * @param FormFactoryInterface $factoryInterface
+     * @param ProjectType $projectType
+     * @param ObjectManager $om
      */
-    public function __construct(ValidatorInterface $validate)
+    public function __construct(ValidatorInterface $validate, FormFactoryInterface $factoryInterface, ProjectType $projectType, ObjectManager $om)
     {
         $this->validate = $validate;
+        $this->form = $factoryInterface;
+        $this->projectType = $projectType;
+        $this->om = $om;
     }
 
 
@@ -51,48 +66,19 @@ class ProjectHandler implements HandlerInterface
      */
     public function post(array $params)
     {
-        $data = &$params['project'];
-
-        $default_project_data = [
-            'vocabulary_type' => 'not_specified',
-            'grammatical_person' => 'not_specified',
-            'target_reader_groups' => 'not_specified',
-            'options' => [
-                'language_level' => 'premium'
-            ]
-        ];
-
-        $data = array_merge($default_project_data, $data);
-
-        $project = new Project();
-        $project->createProject(
-            !empty($data['name']) ? $data['name'] : '',
-            !empty($data['activity_name']) ? $data['activity_name'] : '',
-            !empty($data['options']) ? $data['options'] : [],
-            $data['language_from'],
-            $data['language_to'],
-            $data['category'],
-            $data['project_briefing'],
-            $data['deadline'],
-            'test',
-            $data['author_should_use_rich_text'],
-            '',
-            $data['vocabulary_type'],
-            $data['grammatical_person'],
-            $data['target_reader_groups'],
-            [],
-            []
-        );
+        $params['TextMasterNewProject']['project'] = array_merge($this->setDefaultParams(), $params['TextMasterNewProject']['project']);
+        $transfer = new TransferArrayToObject($params['TextMasterNewProject']);
 
         /**@var $errors Get errors when validate**/
-        $errors = $this->validate->validate($project);
+        $errors = $this->validate->validate($transfer->transfer());
 
         if (count($errors) > 0) {
             return (new HandlerErrorsApi($errors))->getErrors();
         }
 
-        $textmaster = new TextMasterService();
-        $response_project = $textmaster->createProject(json_encode($params));
+        /** @Object $testMaster **/
+        $textMaster = new TextMasterService();
+        $response_project = $textMaster->createProject(json_encode($params['TextMasterNewProject']));
 
         if (isset($response_project['errors'])) {
             $response_error = [
@@ -110,7 +96,6 @@ class ProjectHandler implements HandlerInterface
 
             return $response_error;
         }
-        unset($response_project['code']);
 
         // Remove not unnecessary
         if (array_key_exists('callback', $response_project)) {
@@ -161,5 +146,17 @@ class ProjectHandler implements HandlerInterface
     public function delete($objectInterface)
     {
         // TODO: Implement delete() method.
+    }
+
+    private function setDefaultParams()
+    {
+        return [
+            'vocabulary_type' => 'not_specified',
+            'grammatical_person' => 'not_specified',
+            'target_reader_groups' => 'not_specified',
+            'options' => [
+                'language_level' => 'premium'
+            ]
+        ];
     }
 }

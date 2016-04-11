@@ -10,7 +10,8 @@ class FormErrorsSerializer
         $errors = array();
         $errors['global_message'] = array();
         $errors['fields'] = array();
-        $errors['status'] = \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST;
+        $errors['code'] = \Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST;
+        $errors['message'] = '';
 
         foreach ($form->getErrors() as $error) {
             $errors['global_message'][] = $error->getMessage();
@@ -21,6 +22,13 @@ class FormErrorsSerializer
         if ($flat_array) {
             $errors['fields'] = $this->arrayFlatten($errors['fields'],
                 $glue_keys, (($add_form_name) ? $form->getName() : ''));
+        }
+
+        if (!$errors['fields']) {
+            foreach ($errors['fields'] as $field => $message) {
+                $errors['message'] .= $message.'.';
+                $errors['field'] .= $field.'';
+            }
         }
 
 

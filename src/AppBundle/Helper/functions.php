@@ -70,33 +70,24 @@ function addObjectKeyForArray(array &$array, $key_exist, $object_name) {
 }
 
 function addTextMasterDateForArray(array &$array) {
-    /*$textmaster_date_default = [
-        'TextMasterDate' => [
-            'day' => null,
-            'month' => null,
-            'year' => null,
-            'full' => null
-        ]
-    ];*/
-
     if (array_key_exists('created_at', $array)) {
         $value = $array['created_at'];
-        $array['created_at'] = $value; //? ['TextMasterDate' => $value] : $textmaster_date_default;
+        $array['created_at'] = ['TextMasterDate' => $value]; //? ['TextMasterDate' => $value] : $textmaster_date_default;
     }
 
     if (array_key_exists('updated_at', $array)) {
         $value = $array['updated_at'];
-        $array['updated_at'] = $value; //? ['TextMasterDate' => $value] :  $textmaster_date_default;
+        $array['updated_at'] = ['TextMasterDate' => $value]; //? ['TextMasterDate' => $value] :  $textmaster_date_default;
     }
 
     if (array_key_exists('launched_at', $array)) {
         $value = $array['launched_at'];
-        $array['launched_at'] = $value; //? ['TextMasterDate' => $value] : $textmaster_date_default;
+        $array['launched_at'] = ['TextMasterDate' => $value]; //? ['TextMasterDate' => $value] : $textmaster_date_default;
     }
 
     if (array_key_exists('completed_at', $array)) {
         $value = $array['completed_at'];
-        $array['completed_at'] = $value; //? ['TextMasterDate' => $value] : $textmaster_date_default;
+        $array['completed_at'] = $value ? ['TextMasterDate' => $value] : null;
     }
 }
 

@@ -26,7 +26,11 @@ services:
 
     app.app_bundle.handler.project_handler:
         class: AppBundle\Handler\ProjectHandler
-        arguments: ["@validator"]
+        arguments: ["@validator", "@form.factory", "@app.app_bundle.form.type.project", "@doctrine.orm.entity_manager"]
+
+    app.app_bundle.handler.document_handler:
+            class: AppBundle\Handler\DocumentHandler
+            arguments: ["@validator", "@form.factory"]
 
     app.app_bundle.form.type.article:
         class: AppBundle\Form\Type\ArticleType
@@ -35,6 +39,7 @@ services:
 
     app.app_bundle.form.type.project:
         class: AppBundle\Form\Type\ProjectType
+        arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: form.type, alias: project_form }
 
@@ -53,3 +58,7 @@ services:
         class: AppBundle\Validator\Constraints\ContainsOptionProjectValidator
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
+    validator.word_count_document:
+            class: AppBundle\Validator\Constraints\ContainsWordCountDocumentValidator
+            tags:
+                - { name: validator.constraint_validator, alias: alias_name }

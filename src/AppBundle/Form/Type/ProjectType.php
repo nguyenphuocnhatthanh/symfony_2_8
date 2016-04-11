@@ -1,14 +1,27 @@
 <?php
 namespace AppBundle\Form\Type;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjectType extends AbstractType
 {
+    private $om;
+
+    /**
+     * ProjectType constructor.
+     * @param ObjectManager $om
+     */
+    public function __construct(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         $builder->add('name')
             ->add('activity_name')
             ->add('options')
@@ -30,6 +43,8 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => 'AppBundle\Entity\Project'
-        ]);
+        ])
+        ->setRequired(['em'])
+        ->setAllowedTypes('em', 'Doctrine\Common\Persistence\ObjectManager');
     }
 }

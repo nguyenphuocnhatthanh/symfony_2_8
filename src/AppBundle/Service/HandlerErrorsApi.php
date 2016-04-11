@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Exception;
+namespace AppBundle\Service;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -20,7 +20,6 @@ class HandlerErrorsApi
     {
         $responseErrors = [];
         foreach ($this->errors as $key => $error) {
-//            preg_match('/^\[(.*?)\]$/', $error->getPropertyPath(), $field);
             $responseErrors[$error->getPropertyPath()] = $error->getMessage();
         }
 

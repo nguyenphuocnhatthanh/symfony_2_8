@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Validator\Constraints as AssertBundle;
@@ -17,30 +18,38 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Project
 {
     /**
+     *
      * @var int
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank()
      */
     protected $name;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\Choice(choices = {"copywriting", "proofreading", "translation"}, message = "The activity name not valid.")
      */
     protected $activityName;
 
     /**
      * @Assert\Type(type="array")
+     * @ORM\Column(type="json_array")
      * @AssertBundle\ContainsOptionProject()
      */
     protected $options;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank
      * @AssertBundle\ContainsLanguageToProject()
      */
@@ -48,6 +57,7 @@ class Project
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank
      * @AssertBundle\ContainsLanguageToProject()
      */
@@ -55,6 +65,7 @@ class Project
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank
      * @AssertBundle\ContainsCategory()
      */
@@ -62,39 +73,46 @@ class Project
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $projectBriefing;
 
     /**
      * @var string
+     * @ORM\Column(type="datetime", nullable=true)
      * @Assert\DateTime()
      */
     protected $deadline;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $projectBriefingIsRich;
 
     /**
      * @var bool
+     * @ORM\Column(type="boolean", nullable=true)
      * @Assert\Type(type="bool", message="The author should use rich text not valid.")
      */
     protected $authorShouldUseRichText;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $workTemplate;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\Choice(choices = {"not_specified", "popular", "technical", "fictional"}, message = "The vocalulary type not valid.")
      */
     protected $vocabularyType;
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\Choice(choices = {"not_specified", "first_person_singular", "second_person_singular", "third_person_singular_masculine",
      *     "third_person_singular_feminine", "third_person_singular_neuter", "first_person_plural", "second_person_plural", "third_person_plural"
      *     },
@@ -104,11 +122,13 @@ class Project
 
     /**
      * @var string
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $targetReaderGroups;
 
     /**
      * @var array
+     * @ORM\Column(type="json_array", nullable=true)
      */
     protected $textmasters;
 
@@ -124,6 +144,7 @@ class Project
 
     /**
      * @var int
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $priority;
 
@@ -184,23 +205,45 @@ class Project
 
     /**
      * @var mixed
+     * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
      * @var mixed
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $updatedAt;
 
     /**
      * @var mixed
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $launchedAt;
 
     /**
      * @var mixed
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $completedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppStore", inversedBy="projects")
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id")
+     */
+    private $appStore;
+
+    public function addAppStore(AppStore $appStore)
+    {
+        $this->appStore->add($appStore);
+
+        return;
+    }
+
+    public function removeAppStore(AppStore $appStore)
+    {
+        $this->appStore->removeElement($appStore);
+    }
 
     /**
      * Project constructor.
@@ -243,7 +286,7 @@ class Project
 
     public function __construct()
     {
-
+        $this->appStore = new ArrayCollection();
     }
 
     public function validate(ExecutionContextInterface $context)
@@ -491,18 +534,19 @@ class Project
     /**
      * @return array
      */
-    public function getDocuments()
+   /* public function getDocuments()
     {
         return $this->documents;
-    }
+    }*/
+
 
     /**
      * @param array $documents
      */
-    public function setDocuments($documents)
+  /*  public function setDocuments($documents)
     {
         $this->documents = $documents;
-    }
+    }*/
 
     /**
      * @return mixed
@@ -774,6 +818,22 @@ class Project
     public function setCompletedAt($completedAt)
     {
         $this->completedAt = $completedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActivityName()
+    {
+        return $this->activityName;
+    }
+
+    /**
+     * @param string $activityName
+     */
+    public function setActivityName($activityName)
+    {
+        $this->activityName = $activityName;
     }
 
 

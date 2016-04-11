@@ -81,6 +81,11 @@ class TextMasterService
         
     }
 
+    public function createDocument($projectId, $params)
+    {
+        return $this->request('projects/'.$projectId.'/documents', 'POST', $params);
+    }
+
     private function handlerDataResponse($data)
     {
         $result = json_decode($data->data, TRUE);
@@ -98,5 +103,4 @@ class TextMasterService
 
         throw new JsonNotValidException;
     }
-
 }
