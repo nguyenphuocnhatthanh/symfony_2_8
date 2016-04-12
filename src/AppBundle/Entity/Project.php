@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Table(name="project")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectRepository")
  * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "validate"})
+ * @Assert\Callback({"AppBundle\Validator\Constraints\ProjectCallbackValidator", "validateDocument"})
  */
 class Project
 {
@@ -834,6 +835,22 @@ class Project
     public function setActivityName($activityName)
     {
         $this->activityName = $activityName;
+    }
+
+    /**
+     * @param array $documents
+     */
+    public function setDocuments($documents)
+    {
+        $this->documents = $documents;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDocuments()
+    {
+        return $this->documents;
     }
 
 

@@ -3,7 +3,9 @@ namespace AppBundle\Validator\Constraints;
 
 
 use AppBundle\Entity\Project;
+use AppBundle\Service\TransferArrayToObject;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class ProjectCallbackValidator
@@ -22,5 +24,22 @@ class ProjectCallbackValidator
                 ->atPath('language_to')
                 ->addViolation();
         }
+    }
+
+    public static function validateDocument(Project $object, ExecutionContextInterface $context)
+    {
+       /* if (!empty($object->getDocuments())) {
+
+            foreach ($object->getDocuments() as $document) {
+
+                $document = ['document' => $document['TextMasterDocumentRow']];
+
+
+                $transform = new TransferArrayToObject($document);
+//                $errors = $validate->validate($transform);
+
+                die(dump($validate));
+            }
+        }*/
     }
 }

@@ -31,7 +31,19 @@ class ProjectController extends FOSRestController
         }
     }
 
-
+    public function getProjectFilterAction(Request $request)
+    {
+        try {
+            $handler = $this->getHandler();
+            return $handler->filter($request->query->all());
+        } catch (\Exception $e) {
+            return [
+                'code' => 500,
+                'message' => $e->getMessage(). '. File: '. $e->getFile(). '. Line:'.$e->getLine(),
+                'fields' => []
+            ];
+        }
+    }
     /**
      * Get service handler
      * @return object

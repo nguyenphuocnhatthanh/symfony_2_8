@@ -41,7 +41,8 @@ class TransferArrayToObject
             $objectEntity = new $mappings[$object];
             foreach ($properties as $property => $val) {
                 if (!method_exists($objectEntity, $this->camelCaseSetMethod($property))) {
-                    throw new TransformerException($property);
+//                    throw new TransformerException($property);
+                    continue;
                 }
 
                 $objectEntity->{$this->camelCaseSetMethod($property)}($val);

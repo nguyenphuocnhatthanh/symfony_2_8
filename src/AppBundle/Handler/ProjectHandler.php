@@ -2,6 +2,7 @@
 namespace AppBundle\Handler;
 
 use AppBundle\Form\Type\ProjectType;
+use AppBundle\Service\ApiValidate;
 use AppBundle\Service\HandlerErrorsApi;
 use AppBundle\Service\TextMasterService;
 use AppBundle\Service\TransferArrayToObject;
@@ -76,45 +77,52 @@ class ProjectHandler implements HandlerInterface
             return (new HandlerErrorsApi($errors))->getErrors();
         }
 
-        /** @Object $testMaster **/
-        $textMaster = new TextMasterService();
-        $response_project = $textMaster->createProject(json_encode($params['TextMasterNewProject']));
+        foreach ($params['TextMasterNewProject']['project']['documents'] as $document) {
+            $transferDocument = new TransferArrayToObject(['document' => $document['TextMasterDocumentRow']]);
+            try {
+                $errors = $this->validate->validate($transferDocument->transfer());
 
-        if (isset($response_project['errors'])) {
-            $response_error = [
-                'code' => $response_project['code'],
-                'message' => '',
-                'fields' => ''
-            ];
-
-            foreach ($response_project['errors'] as $field => $error) {
-                $response_error['fields'] .= $field .', ';
-                $response_error['message'] .= $field .': '.$error[0]. '. ';
+                if (count($errors)) {
+                    return (new HandlerErrorsApi($errors))->getErrors();
+                }
+            } catch (TransformerException $e) {
+                return [
+                    'code' => 400,
+                    'message' => $e->getMessage(),
+                    'fields' => $e->getField()
+                ];
             }
 
-            $response_error['fields'] = substr($response_error['fields'], 0, -2);
+        }
 
-            return $response_error;
+
+        /** @Object $testMaster **/
+        $textMaster = new TextMasterService();
+        $response = $textMaster->createProject(json_encode($params['TextMasterNewProject']));
+
+
+        if (isset($response['code']) && 200 !== $response['code']) {
+            return $response;
         }
 
         // Remove not unnecessary
-        if (array_key_exists('callback', $response_project)) {
-            unset($response_project['callback']);
+        if (array_key_exists('callback', $response)) {
+            unset($response['callback']);
         }
 
-        if (array_key_exists('total_costs', $response_project)) {
-            unset($response_project['total_costs']);
+        if (array_key_exists('total_costs', $response)) {
+            unset($response['total_costs']);
         }
-        addObjectKeyForArray($response_project, 'documents_statuses', 'TextMasterDocumentsStatuses');
-        addObjectKeyForArray($response_project, 'cost_per_word', 'TextMasterCost');
-        addObjectKeyForArray($response_project, 'cost_in_currency', 'TextMasterCost');
-        addTextMasterDateForArray($response_project);
+        addObjectKeyForArray($response, 'documents_statuses', 'TextMasterDocumentsStatuses');
+        addObjectKeyForArray($response, 'cost_per_word', 'TextMasterCost');
+        addObjectKeyForArray($response, 'cost_in_currency', 'TextMasterCost');
+        addTextMasterDateForArray($response);
 
         return [
             'TextMasterProjectResponse' => [
                 'success' => true,
                 'data' => [
-                    'TextMasterProjectRow' => $response_project
+                    'TextMasterProjectRow' => $response
                 ]
             ]
         ];
@@ -146,6 +154,43 @@ class ProjectHandler implements HandlerInterface
     public function delete($objectInterface)
     {
         // TODO: Implement delete() method.
+    }
+
+    public function filter(array $params)
+    {
+        $where = json_decode($params['where'], true);
+
+        if (!$where) {
+            return [
+                'code' => 400,
+                'message' => 'The operator where is not valid',
+                'fields' => null
+            ];
+        }
+
+        $rules = new ApiValidate('project_filter', ['allowMissingFields' => true, 'allowExtraFields' => true]);
+        $errors = $this->validate->validate($where, $rules->rules());
+
+        if (count($errors) > 0) {
+            return (new HandlerErrorsApi($errors))->getErrors();
+        }
+
+        /** @Object $testMaster **/
+        $textMaster = new TextMasterService();
+
+        $response = $textMaster->filterProject('?where='.urlencode($params['where']).'&order='.$params['order']);
+
+        if (isset($response['code']) && 200 !== $response['code']) {
+            return $response;
+        }
+
+        return [
+            'success' => true,
+            'total' => count($response),
+            'rows' => [
+                'TextMasterProjectRow' => $response
+            ]
+        ];
     }
 
     private function setDefaultParams()
